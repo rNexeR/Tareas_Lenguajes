@@ -1,0 +1,18 @@
+{"edges" :
+	[
+		{"from" : "a", "to" : "b", "weight" : 6},
+		{"from" : "a", "to" : "g", "weight" : 8},
+		{"from" : "a", "to" : "d", "weight" : 10},
+		{"from" : "d", "to" : "e", "weight" : 6},
+		{"from" : "e", "to" : "b", "weight" : 15},
+		{"from" : "b", "to" : "h", "weight" : 13},
+		{"from" : "b", "to" : "c", "weight" : 11},
+		{"from" : "c", "to" : "h", "weight" : 3},
+		{"from" : "g", "to" : "h", "weight" : 5},
+		{"from" : "g", "to" : "i", "weight" : 5},
+		{"from" : "e", "to" : "f", "weight" : 2},
+		{"from" : "f", "to" : "g", "weight" : 4},
+		{"from" : "f", "to" : "i", "weight" : 6},
+		{"from" : "h", "to" : "i", "weight" : 7}
+	]
+}

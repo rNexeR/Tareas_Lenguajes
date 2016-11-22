@@ -1,54 +1,85 @@
 package main
 
 import (
-    "github.com/go-martini/martini"
-    //"github.com/martini-contrib/binding"
-    "github.com/martini-contrib/render"
-    "net/http"
-    "io/ioutil"
-    "./pkg/emails"
-    "./pkg/upload"
-    //"github.com/martini-contrib/cors"
-    "fmt"
+	"./pkg/emails"
+	"./pkg/kruskal"
+	"./pkg/steganografy"
+	"./pkg/upload"
+	"encoding/json"
+	"github.com/go-martini/martini"
+	//"github.com/martini-contrib/binding"
+	"github.com/martini-contrib/render"
+	"io/ioutil"
+	"net/http"
+	//"github.com/martini-contrib/cors"
+	"fmt"
 )
 
+func main() {
 
+	m := martini.Classic()
 
-func main(){
+	m.Use(render.Renderer())
 
-    m := martini.Classic();
+	m.Get("/", func(r render.Render) {
+		r.JSON(http.StatusOK, "Lenguajes de Programacion - Tareas - Nexer Rodriguez - 21411072")
+	})
 
-    m.Use(render.Renderer())
+	m.Post("/orderEmails", func(r *http.Request, res render.Render) {
+		err := r.ParseMultipartForm(100000)
+		if err != nil {
+			res.JSON(http.StatusInternalServerError, err.Error())
+		}
+		upload.UploadFile("./uploads/emails.txt", r)
+		//call function to order emails
+		filename := emails.OrderEmails("./uploads/emails.txt")
+		retornar, _ := ioutil.ReadFile(filename)
+		res.Data(http.StatusOK, retornar)
 
-    m.Get("/",  func(r render.Render) {
-        r.JSON(http.StatusOK, "Lenguajes de Programacion - Tareas - Nexer Rodriguez - 21411072")
-    })
+	})
 
-    m.Post("/orderEmails", func(r *http.Request, res render.Render){
-        err := r.ParseMultipartForm(100000)
-        if err != nil {
-            res.JSON(http.StatusInternalServerError, err.Error())
-        }
-        upload.UploadFile("./uploads/emails.txt", r)
-        //call function to order emails
-        filename := emails.OrderEmails("./uploads/emails.txt")
-        retornar, _ := ioutil.ReadFile(filename)
-        res.Data(http.StatusOK, retornar)
+	m.Post("/hideMessage", func(r *http.Request, res render.Render) {
+		err := r.ParseMultipartForm(100000)
+		if err != nil {
+			res.JSON(http.StatusInternalServerError, err.Error())
+		}
+		mensaje := r.FormValue("mensaje")
+		imagenPath := "./uploads/img.bmp"
+		upload.UploadFile(imagenPath, r)
+		fmt.Println(mensaje)
 
-    })
+		steganografy.WriteMessage(mensaje, imagenPath)
 
-    m.Post("/hideMessage", func(r *http.Request, res render.Render){
-        err := r.ParseMultipartForm(100000)
-        if err != nil {
-            res.JSON(http.StatusInternalServerError, err.Error())
-        }
-        mensaje := r.FormValue("mensaje")
-        imagenPath := "./uploads/img.bmp"
-        upload.UploadFile(imagenPath, r)
-        fmt.Println(mensaje)
+		retornar, _ := ioutil.ReadFile(imagenPath)
+		res.Data(http.StatusOK, retornar)
+	})
 
-        res.JSON(http.StatusOK, "Nothing yet")
-    })
+	m.Post("/discoverMessage", func(r *http.Request, res render.Render) {
+		err := r.ParseMultipartForm(100000)
+		if err != nil {
+			res.JSON(http.StatusInternalServerError, err.Error())
+		}
+		imagenPath := "./uploads/img.bmp"
+		upload.UploadFile(imagenPath, r)
 
-    m.Run()
+		mensaje := steganografy.ReadMessage(imagenPath)
+
+		res.JSON(http.StatusOK, mensaje)
+	})
+
+	m.Post("/kruskal", func(r *http.Request, res render.Render) {
+		err := r.ParseMultipartForm(100000)
+		if err != nil {
+			res.JSON(http.StatusInternalServerError, err.Error())
+		}
+		graphStr := r.FormValue("graph")
+		var graph = kruskal.Graph{}
+		json.Unmarshal([]byte(graphStr), &graph)
+		kruskal.PrintGraph(graph)
+		retornar := kruskal.Kruskal(graph)
+		//ret, _ := json.Marshal(retornar)
+		res.JSON(http.StatusOK, retornar)
+	})
+
+	m.Run()
 }
