@@ -77,7 +77,6 @@ func main() {
 		json.Unmarshal([]byte(graphStr), &graph)
 		kruskal.PrintGraph(graph)
 		retornar := kruskal.Kruskal(graph)
-		//ret, _ := json.Marshal(retornar)
 		res.JSON(http.StatusOK, retornar)
 	})
 

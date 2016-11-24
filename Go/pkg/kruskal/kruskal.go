@@ -108,7 +108,6 @@ func doKruskal(graph Graph, nNodes int) Graph {
 	ret := Graph{}
 	kruskalTable := []tableRow{}
 	sort.Sort(ByEdge(graph.Edges))
-	//printGraph(graph)
 	counter := 0
 	iterator := 0
 	flag := 0
@@ -126,14 +125,9 @@ func doKruskal(graph Graph, nNodes int) Graph {
 			kruskalTable = append(kruskalTable, tableRow{graph.Edges[iterator].From, graph.Edges[iterator].To, graph.Edges[iterator].Weight, cflag})
 			ret.Edges = append(ret.Edges, graph.Edges[iterator])
 			counter++
-			//fmt.Println("\t", kruskalTable)
 		}
 		iterator++
 	}
-	//fmt.Println(kruskalTable)
-	//pressAnyKey()
-	//printGraph(ret)
-
 	return ret
 }
 
