@@ -57,6 +57,7 @@ func FilterEmails(filename string) int {
 	}
 
 	cant := createSortedLeaves(emailsSelected)
+	fmt.Println("Create sorted Leaves cant: ", cant)
 	fmt.Println(cant)
 	MergeLeaves(cant)
 	return cant
@@ -105,13 +106,13 @@ func merge(nfiles, ncreates, ccreated, depth int) {
 			defer src.Close()
 			_, err := io.Copy(dst, src)
 			check(err)
-			//fmt.Printf("copying %d_%d from %s\n", depth, ccreated, fCopy)
+			fmt.Printf("copying %d_%d from %s\n", depth, ccreated, fCopy)
 			//pressAnyKey()
 		} else {
 			fResult := "./files/" + strconv.Itoa(depth) + "_" + strconv.Itoa(ccreated) + ".txt"
 			file1 := "./files/" + strconv.Itoa(depth-1) + "_" + strconv.Itoa(ccreated*2) + ".txt"
 			file2 := "./files/" + strconv.Itoa(depth-1) + "_" + strconv.Itoa(ccreated*2+1) + ".txt"
-			//fmt.Printf("creating %d_%d from %s and %s\n", depth, ccreated, file1, file2)
+			fmt.Printf("creating %d_%d from %s and %s\n", depth, ccreated, file1, file2)
 			mergeTwoFiles(file1, file2, fResult)
 			merge(nfiles, ncreates, ccreated+1, depth)
 		}

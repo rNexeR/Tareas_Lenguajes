@@ -6,7 +6,7 @@ var express = require('express')
   , http = require('http')
   , emails = require('./pkg/emails')
   , uploads = require('./pkg/uploads')
-  , steganografy = require('./pkg/steganografy')
+  , steganography = require('./pkg/steganography')
   , fs = require('fs')
   , kruskal = require('./pkg/kruskal')
   , fileUpload = require('express-fileupload');
@@ -58,7 +58,7 @@ app.post('/hideMessage', function(req, res){
     if(err)
       res.status(500).json(err)
     else{
-      steganografy.writeMessage(message, filename);
+      steganography.writeMessage(message, filename);
       res.download(filename);
     }
   });
@@ -70,7 +70,7 @@ app.post('/discoverMessage', function(req, res){
     if(err)
       res.status(500).json("Error uploading file")
     else{
-      var message = steganografy.readMessage(filename);
+      var message = steganography.readMessage(filename);
       res.status(200).json(message);
     }
   })

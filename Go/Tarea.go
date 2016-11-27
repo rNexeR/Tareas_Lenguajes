@@ -3,7 +3,7 @@ package main
 import (
 	"./pkg/emails"
 	"./pkg/kruskal"
-	"./pkg/steganografy"
+	"./pkg/steganography"
 	"./pkg/upload"
 	"encoding/json"
 	"github.com/go-martini/martini"
@@ -48,7 +48,7 @@ func main() {
 		upload.UploadFile(imagenPath, r)
 		fmt.Println(mensaje)
 
-		steganografy.WriteMessage(mensaje, imagenPath)
+		steganography.WriteMessage(mensaje, imagenPath)
 
 		retornar, _ := ioutil.ReadFile(imagenPath)
 		res.Data(http.StatusOK, retornar)
@@ -62,7 +62,7 @@ func main() {
 		imagenPath := "./uploads/img.bmp"
 		upload.UploadFile(imagenPath, r)
 
-		mensaje := steganografy.ReadMessage(imagenPath)
+		mensaje := steganography.ReadMessage(imagenPath)
 
 		res.JSON(http.StatusOK, mensaje)
 	})

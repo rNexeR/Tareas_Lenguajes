@@ -1,4 +1,4 @@
-package steganografy
+package steganography
 
 import (
 	"../bits"
@@ -113,7 +113,7 @@ func WriteMessage(message, filename string) {
 	messageBits := bytesToBits([]byte(message), len(message))
 
 	writeBits(bytesToBits(messageLenBits, 4), 4*8, 0, file)
-	writeBits(messageBits, len(message)*8, 4, file)
+	writeBits(messageBits, len(message)*8, 4*8, file)
 }
 
 func writeBits(bitsToStore []bool, length, offset int, file *os.File) {
@@ -155,7 +155,7 @@ func ReadMessage(filename string) string {
 
 	fmt.Printf("Message to read Len: %d\n", messageLen)
 
-	messageBits := readBits(messageLen*8, 4, file)
+	messageBits := readBits(messageLen*8, 4*8, file)
 	message := bitsToBytes(messageBits, messageLen*8)
 
 	fmt.Println("Finishing read")
