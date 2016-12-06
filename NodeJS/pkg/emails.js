@@ -1,5 +1,6 @@
 var fs = require('fs');
-var LineByLineReader = require('line-by-line');
+var fse = require('fs-extra');
+//var LineByLineReader = require('line-by-line');
 const max = 5;
 
 Array.prototype.subarray=function(start,end){
@@ -91,7 +92,8 @@ var merge = function(nfiles, ncreates, ccreated, depth){
 			var fCopy = "./files/" + (depth-1) + "_" + (nfiles-1) + ".txt"
 			var fResult = "./files/" + (depth) + "_" + (ccreated) + ".txt"
 			
-			fs.createReadStream(fCopy).pipe(fs.createWriteStream(fResult));
+			fse.copySync(fCopy, fResult);
+
 
 			console.log("copying %d_%d from %s\n", depth, ccreated, fCopy)
 			//pressAnyKey()
@@ -107,14 +109,21 @@ var merge = function(nfiles, ncreates, ccreated, depth){
 }
 
 var mergeTwoFiles = function(filel, filer, fileResult, cb){
-
 	var s_posl = 0;
 	var s_posr = 0;
 
-	var emails_r = fs.readFileSync(filer).toString().split("\n");
+	console.log("merging: ", filel, filer, " to: ", fileResult);
+
+	//var c_1 = fs.readFileSync(filel).toString()
+	//var c_2 = fs.readFileSync(filer).toString()
+
 	var emails_l = fs.readFileSync(filel).toString().split("\n");
+	var emails_r = fs.readFileSync(filer).toString().split("\n");
 
 	fs.writeFileSync(fileResult, "");
+
+	//console.log("AR -> ", c_2);
+	//console.log("AL -> ", c_1);
 
 	//console.log("R ->\n", emails_r);
 	//console.log("L ->\n", emails_l);
@@ -124,8 +133,8 @@ var mergeTwoFiles = function(filel, filer, fileResult, cb){
 		var r_email = emails_r[s_posr];
 		var l_email = emails_l[s_posl];
 
-		//console.log("R ->", r_email);
-		//console.log("L ->", l_email);
+		console.log("R ->", r_email);
+		console.log("L ->", l_email);
 
 		if(l_email.length > 0 && r_email.length > 0){
 			if (l_email < r_email) {
@@ -144,8 +153,8 @@ var mergeTwoFiles = function(filel, filer, fileResult, cb){
 				s_posl++;
 			}else if (r_email.length > 0) {
 				//fmt.Printf("Writing: %s\n", r_email)
-				s_posr++;
 				fs.appendFileSync(fileResult, r_email + "\n");
+				s_posr++;
 			} else {
 				break
 			}
@@ -226,7 +235,8 @@ var createSortedLeaves = function(emails){
 			right = emails.length;
 		}
 		///*
-		var emailSorted = emails.subarray(i*5, right)
+		var emailSorted = emails.subarray(i*5, right-1)
+		console.log("Emails sorted in ", fn, " : ",emailSorted);
 		emailSorted.sort();
 		//sort.Strings(emailSorted)
 
@@ -242,6 +252,7 @@ var createSortedLeaves = function(emails){
 			var store = emailSorted[j] + "\n";
 			//fmt.Printf("Email to store: %s \n", store)
 			fs.appendFileSync(fn, store);
+			console.log(j, " - ", store);
 		}
 		//*/
 	}

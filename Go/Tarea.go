@@ -68,10 +68,10 @@ func main() {
 	})
 
 	m.Post("/kruskal", func(r *http.Request, res render.Render) {
-		err := r.ParseMultipartForm(100000)
-		if err != nil {
+		r.ParseMultipartForm(100000)
+		/*if err != nil {
 			res.JSON(http.StatusInternalServerError, err.Error())
-		}
+		}*/
 		graphStr := r.FormValue("graph")
 		var graph = kruskal.Graph{}
 		json.Unmarshal([]byte(graphStr), &graph)

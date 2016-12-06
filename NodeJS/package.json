@@ -7,8 +7,10 @@
   },
   "dependencies": {
     "bitwise": "^0.2.0",
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-fileupload": "0.0.5",
+    "fs-extra": "^1.0.0",
     "line-by-line": "^0.1.5"
   },
   "author": "rNexeR"

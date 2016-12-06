@@ -9,10 +9,13 @@ var express = require('express')
   , steganography = require('./pkg/steganography')
   , fs = require('fs')
   , kruskal = require('./pkg/kruskal')
+  , bodyParser = require('body-parser')
   , fileUpload = require('express-fileupload');
 
 var app = express();
 app.use(fileUpload());
+
+var jsonParser = bodyParser.json();
 
 /*
 app.configure(function(){
@@ -76,11 +79,14 @@ app.post('/discoverMessage', function(req, res){
   })
 })
 
-app.post('/kruskal', function(req, res){
-  res.status(200).json("Working in that");
+app.post('/kruskal', jsonParser, function(req, res){
+  console.log(req.body);
+  var graph = req.body;
+  var ret = kruskal.kruskal(graph);
+  res.status(200).json(ret);
 })
 
-kruskal.test();
+//kruskal.test();
 
 http.createServer(app).listen(8000, function(){
   console.log("Express server listening on port %s in %s mode.",  8000, app.settings.env);
