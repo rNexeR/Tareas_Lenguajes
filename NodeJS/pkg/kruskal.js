@@ -86,6 +86,7 @@ var doKruskal = function(graph, nNodes){
 			util._extend(copy, {flag: cflag});
 			kruskalTable.push(copy);
 			ret.edges.push(graph.edges[iterator]);
+			console.log("\tAdded ", graph.edges[iterator]);
 			counter++
 		}
 		iterator++

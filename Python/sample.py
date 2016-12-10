@@ -1,42 +1,72 @@
-from bottle import route, run, get, post, request
-from emails import sayHello
-from emails import test
+from bottle import route, run, get, post, request, static_file
+from emails import orderEmails
 import json
+import os
+from kruskal import Kruskal
+from steganography import writeMessage, readMessage
 
-class ALGO(object):
-    def __init__(self, messages):
-        self.messages = messages
+class Graph(object):
+    def __init__(self):
+        self.edges = []
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
+
+class Edge(object):
+    def __init__(self, From, To, Weight):
+        self.From = From
+        self.To = To
+        self.Weight = Weight
+
+def upload(req, filename):
+    if os.path.isfile(filename):
+        os.remove(filename)
+    file = req.files.get('file')
+    file.save(filename)
+
+def download(filename):
+    return static_file(filename, root='', download=filename)
 
 @post('/orderEmails')
 def emails():
-    return "Working on that!"
+    filename = "./uploads/test.txt"
+    upload(request, filename)
+    fileRet = orderEmails(filename)
+    return download(fileRet)
 
-@post('/hideMessage')
+@post('/hideMessage')       
 def hide():
-    return "Working on that!"
+    filename = "./uploads/img.bmp"
+    upload(request, filename)
+    message = request.forms.get('message')
+    writeMessage(filename, message)
+
+    return download(filename)
 
 @post('/discoverMessage')
 def discover():
-    return "Working on that!"
+    filename = "./uploads/img.bmp"
+    upload(request, filename)
+    message = readMessage(filename)
+    return message
 
 @post('/kruskal')
 def kruskal():
     #request body = {"messages" : [ {"message":"hola"}, {"message" : "hola"}]}
-    for m in request.json["messages"]:
-        print m
-    algo = ALGO(**request.json)
-    print algo.messages
-    #print request.json.message
-    return "Working on that!"
+    graph = Graph()
+    for m in request.json["edges"]:
+        From = m["from"]
+        To = m["to"]
+        Weight = m["weight"]
+        graph.edges.append(Edge(From, To, Weight))
+
+    ret = Kruskal(graph)
+
+    return ret.toJSON()
 
 @get('/')
 def index():
     return "Lenguajes de Programacion - Tareas - Nexer Rodriguez - 21411072"
 
-@get('/hello')
-def hello():
-    return sayHello()
 
-test()
-
-run(host='localhost', port=8080, debug=True)
+run(host='localhost', port=3000, debug=True)
